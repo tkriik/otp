@@ -289,7 +289,7 @@ default(server) ->
 
       {system_dir, def} =>
           #{default => "/etc/ssh",
-            chk => fun(V) -> check_string(V) andalso check_dir(V) end,
+            chk => fun(V) -> check_path_name(V) andalso check_dir(V) end,
             class => user_options
            },
 
@@ -517,7 +517,7 @@ default(common) ->
     #{
        {user_dir, def} =>
            #{default => false, % FIXME: TBD ~/.ssh at time of call when user is known
-             chk => fun(V) -> check_string(V) andalso check_dir(V) end,
+             chk => fun(V) -> check_path_name(V) andalso check_dir(V) end,
              class => user_options
             },
 
@@ -727,6 +727,10 @@ check_dir(Dir) ->
 %%%----------------------------------------------------------------
 check_string(S) -> is_list(S).                  % FIXME: stub
                 
+%%%----------------------------------------------------------------
+check_path_name(S) ->
+    is_list(S) orelse is_binary(S) orelse is_atom(S).
+
 %%%----------------------------------------------------------------
 check_dh_gex_groups({file,File}) when is_list(File) ->
     case file:consult(File) of
